@@ -15,6 +15,9 @@ class GetDripException(Exception):
 
 class GetDrip(object):
     def __init__(self, token=None, account_id=None, endpoint='https://api.getdrip.com/v2/'):
+        """
+        Initialize GetDrip object.
+        """
         self.token = token
         self.account_id = account_id
         self.endpoint = endpoint
