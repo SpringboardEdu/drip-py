@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 class DripPy(DripQueryPathMixin):
     """
     The main class that interacts with Drip
+    https://www.getdrip.com/docs/rest-api#subscribers
     """
     def __init__(self, token, account_id, endpoint='https://api.getdrip.com/v2/'):
         """
@@ -122,7 +123,6 @@ class DripPy(DripQueryPathMixin):
         Returns:
             json
         """
-        logger.info("here")
         if not payload:
             payload = {}
         headers = {
