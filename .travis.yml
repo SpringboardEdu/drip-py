@@ -10,4 +10,6 @@ install:
 # command to run tests
 script:
   - pytest
-  - pylint drip/
+#  - pylint drip/
+after_success:
+  - coveralls
