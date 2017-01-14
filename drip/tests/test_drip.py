@@ -14,6 +14,7 @@ class TestConstants(object):
     test_email = "test_email"
     test_subscriber = "test_subscriber"
     test_tag = "test_tag"
+    test_remove_tag = "test_remove_tag"
 
 
 class DripDefaultValues(object):
@@ -117,4 +118,98 @@ def test_remove_subscriber_tag(mocker):
     drip_client.send_request.assert_called_with(drip_client.get_update_subscriber_query_path(), {"subscribers": [{
         'email': TestConstants.test_email, 'remove_tags': [TestConstants.test_tag]}]})
     log.debug("Asserted that send_request happened with correct args")
+
+
+def test_update_subscriber_tag_with_new_batch_empty_list():
+    drip_client = create_drip_client()
+    assert drip_client.update_subscriber_tag_with_new_batch(list_of_subscribers=[]) is None
+    log.debug("update_subscriber_tag_with_new_batch with empty list worked")
+
+
+def test_update_subscriber_tag_with_new_batch_one_subscriber(mocker):
+    subscriber = (TestConstants.test_email, TestConstants.test_tag, None)
+    list_of_subscribers = [subscriber]
+    drip_client = create_drip_client()
+    mocker.patch.object(drip_client, "send_request")
+    drip_client.send_request.return_value = "Dummy Value"
+    drip_client.update_subscriber_tag_with_new_batch(list_of_subscribers=list_of_subscribers)
+    drip_client.send_request.assert_called_once()
+    log.debug("update_subscriber_tag_with_new_batch one subscriber")
+
+
+def test_update_subscriber_tag_with_new_batch_one_subscriber_remove_tag(mocker):
+    subscriber = (TestConstants.test_email, TestConstants.test_tag, TestConstants.test_remove_tag)
+    list_of_subscribers = [subscriber]
+    drip_client = create_drip_client()
+    mocker.patch.object(drip_client, "send_request")
+    drip_client.send_request.return_value = "Dummy Value"
+    drip_client.update_subscriber_tag_with_new_batch(list_of_subscribers=list_of_subscribers)
+    drip_client.send_request.assert_called_once()
+    log.debug("update_subscriber_tag_with_new_batch one subscriber with remove tag")
+
+
+def test_test_update_subscriber_tag_with_new_batch_10_subscribers(mocker):
+    subscriber = (TestConstants.test_email, TestConstants.test_tag, None)
+    list_of_subscribers = [subscriber] * 10
+    drip_client = create_drip_client()
+    mocker.patch.object(drip_client, "send_request")
+    drip_client.send_request.return_value = "Dummy Value"
+    drip_client.update_subscriber_tag_with_new_batch(list_of_subscribers=list_of_subscribers)
+    assert drip_client.send_request.call_count == 1
+    log.debug("update_subscriber_tag_with_new_batch with 10 subscriber")
+
+
+def test_test_update_subscriber_tag_with_new_batch_10_subscribers_with_remove_tag(mocker):
+    subscriber = (TestConstants.test_email, TestConstants.test_tag, None)
+    list_of_subscribers = [subscriber] * 10
+    drip_client = create_drip_client()
+    mocker.patch.object(drip_client, "send_request")
+    drip_client.send_request.return_value = "Dummy Value"
+    drip_client.update_subscriber_tag_with_new_batch(list_of_subscribers=list_of_subscribers)
+    assert drip_client.send_request.call_count == 1
+    log.debug("update_subscriber_tag_with_new_batch with 10 subscriber with remove tag")
+
+
+def test_test_update_subscriber_tag_with_new_batch_1000_subscribers(mocker):
+    subscriber = (TestConstants.test_email, TestConstants.test_tag, None)
+    list_of_subscribers = [subscriber] * 1000
+    drip_client = create_drip_client()
+    mocker.patch.object(drip_client, "send_request")
+    drip_client.send_request.return_value = "Dummy Value"
+    drip_client.update_subscriber_tag_with_new_batch(list_of_subscribers=list_of_subscribers)
+    assert drip_client.send_request.call_count == 1
+    log.debug("update_subscriber_tag_with_new_batch with 1000 subscriber")
+
+
+def test_test_update_subscriber_tag_with_new_batch_1010_subscribers(mocker):
+    subscriber = (TestConstants.test_email, TestConstants.test_tag, None)
+    list_of_subscribers = [subscriber] * 1010
+    drip_client = create_drip_client()
+    mocker.patch.object(drip_client, "send_request")
+    drip_client.send_request.return_value = "Dummy Value"
+    drip_client.update_subscriber_tag_with_new_batch(list_of_subscribers=list_of_subscribers)
+    assert drip_client.send_request.call_count == 2
+    log.debug("update_subscriber_tag_with_new_batch with 1010 subscriber")
+
+def test_test_update_subscriber_tag_with_new_batch_1000_subscribers_with_remove_tag(mocker):
+    subscriber = (TestConstants.test_email, TestConstants.test_tag, TestConstants.test_remove_tag)
+    list_of_subscribers = [subscriber] * 1000
+    drip_client = create_drip_client()
+    mocker.patch.object(drip_client, "send_request")
+    drip_client.send_request.return_value = "Dummy Value"
+    drip_client.update_subscriber_tag_with_new_batch(list_of_subscribers=list_of_subscribers)
+    assert drip_client.send_request.call_count == 1
+    log.debug("update_subscriber_tag_with_new_batch with 1000 subscriber")
+
+
+def test_test_update_subscriber_tag_with_new_batch_1010_subscribers_with_remove_tag(mocker):
+    subscriber = (TestConstants.test_email, TestConstants.test_tag, TestConstants.test_remove_tag)
+    list_of_subscribers = [subscriber] * 1010
+    drip_client = create_drip_client()
+    mocker.patch.object(drip_client, "send_request")
+    drip_client.send_request.return_value = "Dummy Value"
+    drip_client.update_subscriber_tag_with_new_batch(list_of_subscribers=list_of_subscribers)
+    assert drip_client.send_request.call_count == 2
+    log.debug("update_subscriber_tag_with_new_batch with 1010 subscriber")
+
 
