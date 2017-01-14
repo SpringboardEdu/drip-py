@@ -19,7 +19,7 @@ setup(
     author='Springboard Tech Team',
     author_email='jeet@springboard.com',
     classifiers=[
-        'Development Status :: 5 - Stable',
+        'Development Status :: 5 - Production / Stable',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
