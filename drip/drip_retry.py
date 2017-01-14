@@ -9,8 +9,8 @@ class DripPyRetry(object):
     A wrapper class that provides retry functionality to the DripPy main class
     We recommend using this over using DripPy directly
     """
-    def __init__(self, token, account_id, end_point='https://api.getdrip.com/v2/'):
-        self.drip_py = DripPy(token, account_id, end_point)
+    def __init__(self, token, account_id, endpoint='https://api.getdrip.com/v2/'):
+        self.drip_py = DripPy(token, account_id, endpoint)
 
     def __getattr__(self, item):
         func = self.drip_py.__getattribute__(item)
