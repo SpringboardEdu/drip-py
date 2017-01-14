@@ -6,7 +6,7 @@ python:
 sudo: required
 # command to install dependencies
 install:
-  - "pip install -i requirements.txt"
+  - "pip install -r requirements.txt"
   - "pip install pytest"
   - "pip install pylint"
 # command to run tests
