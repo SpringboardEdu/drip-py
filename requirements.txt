@@ -17,3 +17,4 @@ requests==2.11.1
 six==1.10.0
 pytest-cov==2.4.0
 python-coveralls==2.9.0
+retry==0.9.1

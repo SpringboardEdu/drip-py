@@ -1,5 +1,13 @@
 def chunks(lst, n):
-    '''yield successive n-sized chunks from lst.'''
+    """
+    Yields successive n-sized chunks from list
+    Args:
+        lst: Python List
+        n (int): Size of chunks
+
+    Returns:
+        Yields successive n-sized chunks
+    """
     for i in xrange(0, len(lst), n):
         yield lst[i:i + n]
 
