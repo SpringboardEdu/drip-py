@@ -81,7 +81,6 @@ class GetDrip(object):
             Uses post update API to add a given tag for an email, creates a new
             subscriber if it doesn't exist in our list already.
             """
-        return
         url = self.get_update_subscriber_query_path_batches()
         from .helpers import partition
         partitions = partition(list_of_subscribers, 1000)
@@ -99,7 +98,6 @@ class GetDrip(object):
 
     def send_request(self, request_url, payload=None, method="POST"):
         """Dispatches the request and returns a response, retries"""
-        return {}
         r = None
         if not payload:
             payload = {}

@@ -1,6 +1,11 @@
+import json
 import logging
 
+import requests
+from requests import ConnectionError
+
 from drip import GetDrip
+from drip.tests import return_response
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
@@ -15,6 +20,12 @@ class TestConstants(object):
     test_subscriber = "test_subscriber"
     test_tag = "test_tag"
     test_remove_tag = "test_remove_tag"
+    test_request_url = "test_request_url"
+    test_headers = {
+        'content-type': 'application/json',
+        # 'content-type': 'application/vnd.api+json',
+        'Accept': 'application/json'
+    }
 
 
 class DripDefaultValues(object):
@@ -191,6 +202,7 @@ def test_test_update_subscriber_tag_with_new_batch_1010_subscribers(mocker):
     assert drip_client.send_request.call_count == 2
     log.debug("update_subscriber_tag_with_new_batch with 1010 subscriber")
 
+
 def test_test_update_subscriber_tag_with_new_batch_1000_subscribers_with_remove_tag(mocker):
     subscriber = (TestConstants.test_email, TestConstants.test_tag, TestConstants.test_remove_tag)
     list_of_subscribers = [subscriber] * 1000
@@ -213,3 +225,51 @@ def test_test_update_subscriber_tag_with_new_batch_1010_subscribers_with_remove_
     log.debug("update_subscriber_tag_with_new_batch with 1010 subscriber")
 
 
+def test_send_request_default(mocker):
+    drip_client = create_drip_client()
+    mocker.patch.object(requests, 'post')
+    resp = return_response()
+    requests.post.return_value = resp
+    assert drip_client.send_request(request_url=TestConstants.test_request_url) == resp
+    assert requests.post.call_count == 1
+    requests.post.assert_called_with(TestConstants.test_request_url, auth=('test_token', ''), data=json.dumps({}),
+                                     headers=TestConstants.test_headers)
+
+
+def test_send_request_default_202_response(mocker):
+    drip_client = create_drip_client()
+    mocker.patch.object(requests, 'post')
+    requests.post.return_value = return_response(202)
+    assert drip_client.send_request(request_url=TestConstants.test_request_url) == {}
+    assert requests.post.call_count == 1
+    requests.post.assert_called_with(TestConstants.test_request_url, auth=('test_token', ''), data=json.dumps({}),
+                                     headers=TestConstants.test_headers)
+
+
+def test_send_request_default_201_response(mocker):
+    drip_client = create_drip_client()
+    mocker.patch.object(requests, 'post')
+    requests.post.return_value = return_response(201)
+    assert drip_client.send_request(request_url=TestConstants.test_request_url) is None
+    assert requests.post.call_count == 1
+    requests.post.assert_called_with(TestConstants.test_request_url, auth=('test_token', ''), data=json.dumps({}),
+                                     headers=TestConstants.test_headers)
+
+
+def test_send_request_get(mocker):
+    drip_client = create_drip_client()
+    mocker.patch.object(requests, 'get')
+    resp = return_response(200)
+    requests.get.return_value = resp
+    assert drip_client.send_request(request_url=TestConstants.test_request_url, method="GET") == resp
+    assert requests.get.call_count == 1
+    requests.get.assert_called_with(TestConstants.test_request_url, auth=('test_token', ''), params={})
+
+
+def test_send_request_get_201_response(mocker):
+    drip_client = create_drip_client()
+    mocker.patch.object(requests, 'get')
+    requests.get.return_value = return_response(201)
+    assert drip_client.send_request(request_url=TestConstants.test_request_url, method="GET") is None
+    assert requests.get.call_count == 1
+    requests.get.assert_called_with(TestConstants.test_request_url, auth=('test_token', ''), params={})
