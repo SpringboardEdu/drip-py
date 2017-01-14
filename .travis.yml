@@ -4,7 +4,10 @@ python:
   - "3.2"
   - "3.3"
 # command to install dependencies
-install: "pip install -i requirements.txt"
+install:
+  - "pip install -i requirements.txt"
+  - "pip install pytest"
+  - "pip install pylint"
 # command to run tests
 script:
   - pytest
