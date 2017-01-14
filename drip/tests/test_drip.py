@@ -2,9 +2,8 @@ import json
 import logging
 
 import requests
-from requests import ConnectionError
 
-from drip import GetDrip
+from drip.drip_retry import DripPy
 from drip.tests import return_response
 
 logging.basicConfig(level=logging.DEBUG)
@@ -34,7 +33,7 @@ class DripDefaultValues(object):
 
 def create_drip_client():
     log.debug("Trying to create drip client")
-    drip_client = GetDrip(token=TestConstants.test_token, account_id=TestConstants.test_account_id,
+    drip_client = DripPy(token=TestConstants.test_token, account_id=TestConstants.test_account_id,
                           endpoint=TestConstants.test_endpoint)
     log.debug("Drip client creation successful")
     return drip_client
@@ -52,7 +51,7 @@ def test_drip_client_creation():
 
 def test_drip_client_creation_default():
     log.debug("Trying to create drip client with default endpoint")
-    drip_client = GetDrip(token=TestConstants.test_token, account_id=TestConstants.test_account_id)
+    drip_client = DripPy(token=TestConstants.test_token, account_id=TestConstants.test_account_id)
     log.debug("Drip client creation successful with default endpoint")
     assert drip_client.token == TestConstants.test_token
     log.debug("Drip client token asserted")
@@ -72,8 +71,9 @@ def test_get_fetch_subscriber_query_path():
 def test_get_unsubscribe_email_query_path():
     drip_client = create_drip_client()
     assert drip_client.get_unsubscribe_email_query_path(
-        TestConstants.test_email) == "{}{}/subscribers/{}/unsubscribe".format(
-        drip_client.endpoint, drip_client.account_id, TestConstants.test_email)
+        TestConstants.test_email) == "{}{}/subscribers/{}/remove".format(drip_client.endpoint,
+                                                                              drip_client.account_id,
+                                                                              TestConstants.test_email)
     log.debug("get_unsubscribe_email_query_path asserted")
 
 
@@ -133,7 +133,7 @@ def test_remove_subscriber_tag(mocker):
 
 def test_update_subscriber_tag_with_new_batch_empty_list():
     drip_client = create_drip_client()
-    assert drip_client.update_subscriber_tag_with_new_batch(list_of_subscribers=[]) is None
+    assert drip_client.update_subscriber_tag_with_new_batch(list_of_subscribers=[]) == {}
     log.debug("update_subscriber_tag_with_new_batch with empty list worked")
 
 
@@ -250,7 +250,7 @@ def test_send_request_default_201_response(mocker):
     drip_client = create_drip_client()
     mocker.patch.object(requests, 'post')
     requests.post.return_value = return_response(201)
-    assert drip_client.send_request(request_url=TestConstants.test_request_url) is None
+    assert drip_client.send_request(request_url=TestConstants.test_request_url) == {}
     assert requests.post.call_count == 1
     requests.post.assert_called_with(TestConstants.test_request_url, auth=('test_token', ''), data=json.dumps({}),
                                      headers=TestConstants.test_headers)
@@ -270,6 +270,6 @@ def test_send_request_get_201_response(mocker):
     drip_client = create_drip_client()
     mocker.patch.object(requests, 'get')
     requests.get.return_value = return_response(201)
-    assert drip_client.send_request(request_url=TestConstants.test_request_url, method="GET") is None
+    assert drip_client.send_request(request_url=TestConstants.test_request_url, method="GET") == {}
     assert requests.get.call_count == 1
     requests.get.assert_called_with(TestConstants.test_request_url, auth=('test_token', ''), params={})
