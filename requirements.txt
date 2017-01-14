@@ -1,1 +1,2 @@
 requests[security]==2.11.1
+retry==0.9.1
